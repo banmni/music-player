@@ -12,6 +12,10 @@ dist
 dist-ssr
 *.local
 
+# Local music library media
+assets/Audio/*.mp3
+assets/Album/*
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
