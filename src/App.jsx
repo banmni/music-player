@@ -151,10 +151,17 @@ function App() {
     seek={audio.seek}/>
     
     <div className='middle-buttons-container'>
+
+      <img src={assets.Shuffle} className='shuffle-container iconButton' alt="Shuffle"/>
+
+
       <HoverButtons normal={assets.BackwardNormal} hover={assets.BackwardNormalHover} alt="Backwards button" onClick = {audio.previous} className= "control-button side-button"/>
       <HoverButtons normal={assets.PlayNormal} hover={assets.PlayNormalHover} alt="Play button" onClick = {audio.playButton} className ="control-button play-button"/>
       <HoverButtons normal={assets.ForwardNormal} hover={assets.ForwardNormalHover} alt="Forwards Button" onClick = {audio.next}  className="control-button side-button"/>
+
+        <img src={assets.volume} className="volume-container iconButton" alt="Volume"/>
     </div>
+
     <button onClick={audio.togglePlayMode}>Shuffle</button>
     </>
   )

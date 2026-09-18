@@ -17,6 +17,9 @@ import MaxMinHover from "../assets/Icons/MaxMinHover.png"
 import MinimizeHover from "../assets/Icons/MinimizeHover.png"
 import Hamburger from "../assets/Icons/Hamburger.png"
 import HamburgerHover from "../assets/Icons/HamburgerHover.png"
+import Shuffle from "../assets/Icons/shuffle.png"
+import ShuffleOn from "../assets/Icons/shuffleOn.png"
+import volume from "../assets/Icons/volumeButton.png"
 
 import hatLogo from "../assets/Icons/strawHat.png"
 
@@ -42,7 +45,10 @@ const assets = {
   MinimizeHover,
   Hamburger,
   HamburgerHover,
-  hatLogo
+  hatLogo,
+  Shuffle,
+  ShuffleOn,
+  volume
 }
 
 export default assets

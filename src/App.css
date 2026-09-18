@@ -138,8 +138,12 @@
   margin-inline: auto;
 }
 .middle-buttons-container img{
-  width: 33%;
+  width: 25%;
 }
+.middle-buttons-container .volume-container, .middle-buttons-container .shuffle-container{
+  width: 10%;
+}
+
 .play-button{
   width: clamp(62px, 22vw, 92px);
   height: auto;
@@ -164,4 +168,9 @@ nav > * {
 
 .button{
   cursor: pointer;
+}
+
+
+.iconButton img{
+  width: 40px;
 }
