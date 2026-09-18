@@ -124,6 +124,65 @@ function TopBar(){
   )
 }
 
+function VolumeControl({ volume, setVolume }) {
+  const [open, setOpen] = useState(false)
+  const containerRef = useRef(null)
+  const buttonRef = useRef(null)
+  const sliderRef = useRef(null)
+  const percentage = Math.round(volume * 100)
+
+  useEffect(() => {
+    if (!open) return
+    sliderRef.current?.focus()
+
+    function closeOutside(event) {
+      if (!containerRef.current?.contains(event.target)) setOpen(false)
+    }
+    function closeOnEscape(event) {
+      if (event.key === 'Escape') {
+        setOpen(false)
+        buttonRef.current?.focus()
+      }
+    }
+    document.addEventListener('pointerdown', closeOutside)
+    document.addEventListener('keydown', closeOnEscape)
+    return () => {
+      document.removeEventListener('pointerdown', closeOutside)
+      document.removeEventListener('keydown', closeOnEscape)
+    }
+  }, [open])
+
+  return (
+    <div className="volume-container" ref={containerRef}>
+      <button
+        type="button"
+        className="volume-toggle"
+        ref={buttonRef}
+        aria-label="Volume"
+        aria-expanded={open}
+        aria-controls={open ? 'volume-popup' : undefined}
+        onClick={() => setOpen(value => !value)}
+      >
+        <img src={assets.volume} alt="" />
+      </button>
+      {open && (
+        <div className="volume-popup" id="volume-popup">
+          <input
+            ref={sliderRef}
+            id="volume-slider"
+            type="range"
+            min="0"
+            max="100"
+            step="1"
+            value={percentage}
+            aria-orientation="vertical"
+            onChange={event => setVolume(Number(event.target.value) / 100)}
+          />
+        </div>
+      )}
+    </div>
+  )
+}
 
 function App() {
   
@@ -159,7 +218,7 @@ function App() {
       <HoverButtons normal={assets.PlayNormal} hover={assets.PlayNormalHover} alt="Play button" onClick = {audio.playButton} className ="control-button play-button"/>
       <HoverButtons normal={assets.ForwardNormal} hover={assets.ForwardNormalHover} alt="Forwards Button" onClick = {audio.next}  className="control-button side-button"/>
 
-        <img src={assets.volume} className="volume-container iconButton" alt="Volume"/>
+      <VolumeControl volume={audio.volume} setVolume={audio.setVolume} />
     </div>
 
     <button onClick={audio.togglePlayMode}>Shuffle</button>

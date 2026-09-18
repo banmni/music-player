@@ -8,6 +8,14 @@ export function activateAudio(tracks, AudioPath){
     const [currentTime, setCurrentTime] = useState(0)
     const [currentProgress, setCurrentProgress] = useState(0)
     const [duration, setDuration] = useState(0)
+    const [volume, setVolumeState] = useState(1)
+
+    const setVolume = useCallback((value) => {
+        if (!Number.isFinite(value)) return
+        const clamped = Math.max(0, Math.min(1, value))
+        audio.volume = clamped
+        setVolumeState(clamped)
+    }, [audio])
 
     const [arrayPrevious,setarrayPrevious] = useState([])
     
@@ -185,6 +193,8 @@ export function activateAudio(tracks, AudioPath){
     previous,
     next, 
     togglePlayMode,
+    volume,
+    setVolume,
 
     currentTime,
     seek,
