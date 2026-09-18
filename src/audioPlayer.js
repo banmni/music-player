@@ -1,7 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-export {useRef, useState,useEffect} from 'react'
-
 export function activateAudio(tracks, AudioPath){
     const audioRef = useRef(new Audio())
     const audio = audioRef.current
@@ -11,7 +9,7 @@ export function activateAudio(tracks, AudioPath){
     const [currentProgress, setCurrentProgress] = useState(0)
     const [duration, setDuration] = useState(0)
 
-    const [previousIndex,setPreviousIndex] = useState(null)
+    const [arrayPrevious,setarrayPrevious] = useState([])
     
     // play mode have it normal or shuffle mode
     const [playMode, setPlayMode] = useState('normal')
@@ -29,6 +27,7 @@ export function activateAudio(tracks, AudioPath){
         (async () =>{
             let src
             if(AudioPath){
+                console.log(`${AudioPath} ${newTrack.file}`)
                 src =   AudioPath+`${newTrack.file}`
                 console.log(src)
             }else{
@@ -52,6 +51,29 @@ export function activateAudio(tracks, AudioPath){
     
     },[trackIndex])
 
+    // updates what time the song is at
+    useEffect(()=>{
+        function updateTime(){
+            setCurrentTime(audio.currentTime)
+
+            if(audio.duration){
+                setCurrentProgress(audio.currentTime/audio.duration)
+            }
+        }
+
+        function loadDuration(){
+            setDuration(audio.duration)
+        }
+
+        audio.addEventListener('timeupdate', updateTime)
+         audio.addEventListener('loadedmetadata', loadDuration)
+
+         return()=>{
+            audio.removeEventListener('timeupdate',updateTime)
+            audio.removeEventListener('loadedmetadata',loadDuration)
+         }
+    },[])
+
     const play = useCallback(()=>{
         audio.play().catch(()=>{})
         setIsPlaying(true)
@@ -60,34 +82,77 @@ export function activateAudio(tracks, AudioPath){
         audio.pause()
         setIsPlaying(false)
     },[])
+    
+    const seek = useCallback((fraction)=>{
+        if(audio.duration){
+            const clamped = Math.max(0, Math.min(1,fraction))
+            const newTime = clamped * audio.duration
+
+            audio.currentTime = newTime
+            setCurrentTime(newTime)
+            setCurrentProgress(clamped)
+        }
+    },[])
 
     //  sets the trackindex -1 or at end 0
     const previous = useCallback(()=>{
-        console.log('activated prev ' , previousIndex)
-        if(previousIndex !==null){
-            setTrackIndex(previousIndex)
-        }else{ setTrackIndex(tracks.length-1) } // assume its at start index 0
-    }, [tracks,trackIndex,previousIndex])
+        console.log('current array songs  ' , arrayPrevious)
+        if(arrayPrevious.length !== 0){
+            let previousNumber = arrayPrevious.splice(-1)[0]
+            if (typeof(previousNumber)!== 'number'){
+                console.warn("THIS IS NOT NUMBER");
+                return
+            }
+            setTrackIndex(previousNumber)
+            console.log('spliced')
+        }else{ 
+            return setTrackIndex(0) } // assume its at start index 0
+    }, [tracks,trackIndex,arrayPrevious])
 
      const next = useCallback(()=>{
-    
-        setPreviousIndex(trackIndex)
-        console.log('previous track ', previousIndex)
+        
+        setarrayPrevious([...arrayPrevious, trackIndex])
+        console.log(`arrayPrevious : ${[...arrayPrevious]} Trackindex :${trackIndex}`)
+
         if (shuffleOn){
-            let randomIndex = trackIndex
-            while(randomIndex === trackIndex){
+            // check if the arrayprevious is empty
+            let randomIndex 
+            if (arrayPrevious.length !== 0){
+                // if(arrayPrevious.length >0){
+
+                // }
+                randomIndex = trackIndex
+                console.log("Trackindex ", trackIndex, " randomIndex ", randomIndex)
+                console.log(arrayPrevious)
+                while(randomIndex == trackIndex){
+                    randomIndex = Math.floor(Math.random() * (tracks.length))
+                    if(randomIndex == arrayPrevious[arrayPrevious.length-1]){
+                        randomIndex = trackIndex
+                    }
+                }
+            }else{
                 randomIndex = Math.floor(Math.random() * (tracks.length))
             }
-            console.log('THIS IS RANDOMINDEX ',randomIndex)
+
+            // console.log('THIS IS RANDOMINDEX ',randomIndex)
             return setTrackIndex(randomIndex)
         }
+
        if (trackIndex === tracks.length-1){
         return setTrackIndex(0)
-       }else{ return setTrackIndex(trackIndex+1)}
-    }, [tracks,trackIndex,shuffleOn])
+       }else{
+        console.log(trackIndex)
+        return setTrackIndex(trackIndex+1)}
 
+    }, [tracks,trackIndex,shuffleOn, arrayPrevious])
 
-
+    // Plays the next song when it has ended
+    // const playNextSong = ()=>{
+    //     if(shf)
+    // }
+    audio.onended =function(){
+        next()
+    }
     // checks if isplaying and turns off or on
     const playButton = useCallback(()=>{
         if (isPlaying){
@@ -114,5 +179,16 @@ export function activateAudio(tracks, AudioPath){
         }else {shuffle()}
     },[playMode,shuffleOn])
 
-    return {currentTrack,playButton,previous,next, togglePlayMode}
+    return {
+    currentTrack,
+    playButton,
+    previous,
+    next, 
+    togglePlayMode,
+
+    currentTime,
+    seek,
+    duration,
+    progress: currentProgress,
+    }
 }

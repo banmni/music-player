@@ -1,0 +1,167 @@
+.album_image{
+    border: 5px solid black;
+}
+
+.song_title, .song_artist{
+    margin: 0;
+
+}
+
+.song_artist{
+  font-weight: 700;
+  font-size: clamp(1.1rem, 3vw, 3rem);
+}
+.song_title_container {
+    width: 100%;
+    overflow: hidden;
+    margin-top: 10px;
+}
+
+.song_title_track {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: max-content;
+    gap: 4rem;
+}
+.song_title_track.animate {
+  animation: marquee 15s linear infinite;
+}
+
+
+.song_title {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    white-space: nowrap;
+    min-height: 50px;
+    font-size: clamp(2.4rem, 6vw, 4rem);
+    margin: 0;
+    font-weight: 700;
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(calc(-50% - 2rem));
+  }
+}
+.progress-container {
+    margin-top: 20px;
+  width: min(85%, 700px);
+  margin-inline: auto;
+}
+
+.progress-bar-top {
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+/* actual progress line */
+.progress-bar {
+  position: relative;
+  width: 100%;
+  height: clamp(15px, 1.5vw, 12px);
+
+  background: #8fdcf4;
+  border-radius: 6px;
+
+  cursor: pointer;
+}
+
+/* filled portion */
+.progress-bar-filler {
+  height: 100%;
+
+  background: #38bde5;
+  border-radius: 20px;
+
+  pointer-events: none;
+}
+
+/* moving boat */
+.ship-icon {
+  position: absolute;
+
+  width: clamp(45px, 10vw, 75px);
+  height: auto;
+
+  top: 50%;
+
+  transform: translate(-50%, -80%);
+
+  z-index: 3;
+  pointer-events: none;
+}
+
+/* island always stays at the end */
+.island-icon {
+  position: absolute;
+
+  width: clamp(50px, 11vw, 80px);
+  height: auto;
+
+  right: 0;
+  top: 50%;
+
+  transform: translate(50%, -70%);
+
+  z-index: 2;
+
+  pointer-events: none;
+}
+
+.progress-bar-bottom {
+  display: flex;
+  justify-content: space-between;
+
+  width: 100%;
+  margin-top: clamp(5px, 1vw, 10px);
+}
+
+.progress-bar-bottom span{
+    color: white;
+    font-weight: 700;
+    font-size: clamp(1rem, 2.5vw, 1rem);
+}
+
+.middle-buttons-container{
+  width: min(85%, 700px);
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  margin-inline: auto;
+}
+.middle-buttons-container img{
+  width: 33%;
+}
+.play-button{
+  width: clamp(62px, 22vw, 92px);
+  height: auto;
+}
+.top-nav-right, nav{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.top-nav-right{
+  width: 85px;
+}
+nav{
+  margin-top: 10px;
+  -webkit-app-region: drag;
+}
+
+nav > * {
+   -webkit-app-region: no-drag;
+}
+
+.button{
+  cursor: pointer;
+}

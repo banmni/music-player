@@ -1,17 +1,23 @@
 const {app, BrowserWindow, ipcMain, BrowserView} = require("electron")
+const {useState} = require('react')
+const path = require('path')
 
+
+let win
+  
 const createWindow = ()=>{
-    const win = new BrowserWindow({
-        width: 800,
-        height: 500,
+    win = new BrowserWindow({
+        width: 370,
+        height: 625,
         // resizable: false,
-        maximizable:false,
         fullscreenable: false,
-        minimizable:false,
-        transparent: false,
-
+        // minimizable:false,
+        transparent: true ,
+        frame: false,
         webPreferences:{
-          contextIsolation:true
+          preload: path.join(__dirname, 'preload.cjs'),
+          contextIsolation:true,
+          nodeIntegration: false
         }
     })
 
@@ -21,7 +27,7 @@ const createWindow = ()=>{
 app.whenReady().then(()=>{
     createWindow()
 
-     app.on('activate', () => {
+    app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
   })
 
@@ -29,4 +35,22 @@ app.whenReady().then(()=>{
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') app.quit()
+})
+
+// exits the browser
+ipcMain.on('app:quit', ()=>{
+  app.quit()
+})
+ipcMain.on('app:minimize',()=>{
+  if(win.isMinimizable()){
+      win.minimize()
+  }
+
+})
+ipcMain.on('app:minMax', ()=>{
+ if (win.isMaximized()){
+  win.unmaximize()
+ }else{
+  win.maximize()
+ }
 })
